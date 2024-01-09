@@ -1,0 +1,22 @@
+{
+  "name": "cash-game-calc",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "solid-js": "^1.8.7"
+  },
+  "devDependencies": {
+    "jsdom": "^23.2.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vite-plugin-solid": "^2.8.0",
+    "vitest": "^1.1.3"
+  }
+}

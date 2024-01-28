@@ -10,42 +10,36 @@ export function consolidatePayments(paymentBalances: PaymentBalance[]) {
   console.log(paymentBalances);
 
   // Check if there are any items that match in size
-  // let left = 0;
-  // let right = paymentBalances.length - 1;
-  // const equals: PaymentBalance[][] = [];
-  // while (left < right) {
-  //   const rightItem = paymentBalances[left];
-  //   const leftItem = paymentBalances[right];
+  const { equalPayments, pbs } = getEqualBalances(paymentBalances);
+  paymentBalances = pbs;
 
-  //   if (rightItem.balance + leftItem.balance === 0) {
-  //     equals.push([leftItem, rightItem]);
-  //     right--;
-  //     left++;
-  //     continue;
-  //   }
-  //   if (Math.abs(leftItem.balance) > Math.abs(rightItem.balance)) {
-  //     right--;
-  //     continue;
-  //   }
-  //   if (Math.abs(leftItem.balance) > Math.abs(rightItem.balance)) {
-  //     right--;
-  //     continue;
-  //   }
-  // }
+  // convert equalPayments to a payments object {from: string; to: string, amount: number}
+  const payments = equalPayments.map((ePayment) => ({
+    from: ePayment[0].name,
+    to: ePayment[1].name,
+    amount: ePayment[0].balance, // May need a math.abs here
+  }));
+
+  // Remove items in equalPayments from paymentBalances
+  // cycle through payment balances for any one balance clearing items
 }
 
 export function getEqualBalances(paymentBalances: PaymentBalance[]) {
+  const pbs = structuredClone(paymentBalances);
   let left = 0;
-  let right = paymentBalances.length - 1;
-  const equals: PaymentBalance[][] = [];
+  let right = pbs.length - 1;
+  const equalPayments: PaymentBalance[][] = [];
   while (left < right) {
-    const rightItem = paymentBalances[right];
-    const leftItem = paymentBalances[left];
+    const rightItem = pbs[right];
+    const leftItem = pbs[left];
 
     if (rightItem.balance + leftItem.balance === 0) {
-      equals.push([leftItem, rightItem]);
-      right--;
-      left++;
+      equalPayments.push([leftItem, rightItem]);
+      pbs.splice(right, 1);
+      pbs.splice(left, 1);
+      // if (right >= pbs.length) {
+      right = right - 2;
+      // }
       continue;
     }
     if (Math.abs(leftItem.balance) > Math.abs(rightItem.balance)) {
@@ -57,5 +51,5 @@ export function getEqualBalances(paymentBalances: PaymentBalance[]) {
       continue;
     }
   }
-  return equals;
+  return { equalPayments, pbs };
 }

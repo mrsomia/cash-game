@@ -32,7 +32,7 @@ const output = [
 ];
 
 describe("Consolidate Payments", () => {
-  it("getEqualBalances returns expected equals", () => {
+  it("getEqualBalances returns expected payments", () => {
     const input = [
       {
         name: "Moun",
@@ -57,16 +57,11 @@ describe("Consolidate Payments", () => {
     ];
     const { equalPayments } = getEqualBalances(input);
     expect(equalPayments).toEqual([
-      [
-        {
-          name: "Moun",
-          balance: -5,
-        },
-        {
-          name: "Sach",
-          balance: 5,
-        },
-      ],
+      {
+        from: "Sach",
+        to: "Moun",
+        amount: 5,
+      },
     ]);
   });
 

@@ -13,18 +13,12 @@ export function consolidatePayments(paymentBalances: PaymentBalance[]) {
   const { equalPayments, pbs } = getEqualBalances(paymentBalances);
   paymentBalances = pbs;
 
-  // convert equalPayments to a payments object {from: string; to: string, amount: number}
-  const payments = equalPayments.map((ePayment) => ({
-    from: ePayment[0].name,
-    to: ePayment[1].name,
-    amount: ePayment[0].balance, // May need a math.abs here
-  }));
-
   // Remove items in equalPayments from paymentBalances
   // cycle through payment balances for any one balance clearing items
 }
 
 export function getEqualBalances(paymentBalances: PaymentBalance[]) {
+  // Returns an array of equal payments and a spliced payment balance array
   const pbs = structuredClone(paymentBalances);
   let left = 0;
   let right = pbs.length - 1;
@@ -51,5 +45,13 @@ export function getEqualBalances(paymentBalances: PaymentBalance[]) {
       continue;
     }
   }
-  return { equalPayments, pbs };
+
+  // convert equalPayments to a payments object
+  // {from: string; to: string, amount: number}
+  const payments = equalPayments.map((ePayment) => ({
+    from: ePayment[1].name,
+    to: ePayment[0].name,
+    amount: ePayment[1].balance, // May need a math.abs here
+  }));
+  return { equalPayments: payments, pbs };
 }

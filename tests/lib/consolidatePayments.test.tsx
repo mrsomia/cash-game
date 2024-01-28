@@ -58,12 +58,12 @@ describe("Consolidate Payments", () => {
     expect(getEqualBalances(input)).toEqual([
       [
         {
-          name: "Sach",
-          balance: 5,
-        },
-        {
           name: "Moun",
           balance: -5,
+        },
+        {
+          name: "Sach",
+          balance: 5,
         },
       ],
     ]);

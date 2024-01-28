@@ -39,8 +39,8 @@ export function getEqualBalances(paymentBalances: PaymentBalance[]) {
   let right = paymentBalances.length - 1;
   const equals: PaymentBalance[][] = [];
   while (left < right) {
-    const rightItem = paymentBalances[left];
-    const leftItem = paymentBalances[right];
+    const rightItem = paymentBalances[right];
+    const leftItem = paymentBalances[left];
 
     if (rightItem.balance + leftItem.balance === 0) {
       equals.push([leftItem, rightItem]);

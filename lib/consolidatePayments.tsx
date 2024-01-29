@@ -31,8 +31,8 @@ export function getNextPayment(paymentBalances: PaymentBalance[]) {
     throw new Error("Expected balance of first item to be negative");
   }
   let payment: Payment | null = null;
-  for (let i = pbs.length - 1; i >= 0; i--) {
-    const item = pbs[i];
+  for (let i = rest.length - 1; i >= 0; i--) {
+    const item = rest[i];
     if (Math.abs(first.balance) < item.balance) {
       continue;
     }
@@ -41,13 +41,14 @@ export function getNextPayment(paymentBalances: PaymentBalance[]) {
       to: first.name,
       amount: item.balance,
     };
-    rest = rest.splice(i, 1);
+    first.balance = first.balance + item.balance;
+    rest.splice(i, 1);
     break;
   }
   if (!payment) {
     throw new Error("Could not find a suitable payment");
   }
-  return { nextPayments: [payment], pbs: rest };
+  return { nextPayments: [payment], rest: [first, ...rest] };
 }
 
 export function getEqualBalances(paymentBalances: PaymentBalance[]) {

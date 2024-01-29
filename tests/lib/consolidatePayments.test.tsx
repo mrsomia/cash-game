@@ -182,6 +182,59 @@ describe("Consolidate Payments", () => {
     ]);
   });
 
+  it("Find next payment splices the rest", () => {
+    const input = [
+      {
+        name: "Moun",
+        balance: -4,
+      },
+      {
+        name: "Jim",
+        balance: -3,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Sam",
+        balance: 2,
+      },
+      {
+        name: "Tom",
+        balance: 2,
+      },
+      {
+        name: "Sach",
+        balance: 2,
+      },
+    ];
+
+    const { rest } = getNextPayment(input);
+    expect(rest).toEqual([
+      {
+        name: "Moun",
+        balance: -2,
+      },
+      {
+        name: "Jim",
+        balance: -3,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Sam",
+        balance: 2,
+      },
+      {
+        name: "Tom",
+        balance: 2,
+      },
+    ]);
+  });
+
   it.skip("address payments correctly", () => {
     expect(consolidatePayments(input)).toEqual(output);
   });

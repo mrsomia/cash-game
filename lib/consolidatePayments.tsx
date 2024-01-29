@@ -3,18 +3,51 @@ type PaymentBalance = {
   balance: number;
 };
 
+type Payment = {
+  from: string;
+  to: string;
+  amount: number;
+};
+
 export function consolidatePayments(paymentBalances: PaymentBalance[]) {
   // TODO:: throw error if balance do not add to zero
 
   paymentBalances.sort((a, b) => a.balance - b.balance);
   console.log(paymentBalances);
+  const payments: Payment[] = [];
 
   // Check if there are any items that match in size
   const { equalPayments, pbs } = getEqualBalances(paymentBalances);
   paymentBalances = pbs;
 
-  // Remove items in equalPayments from paymentBalances
+  // Check for ways to set up a payment/clear a payment
   // cycle through payment balances for any one balance clearing items
+}
+
+export function getNextPayment(paymentBalances: PaymentBalance[]) {
+  const pbs = structuredClone(paymentBalances);
+  let [first, ...rest] = pbs;
+  if (first.balance >= 0) {
+    throw new Error("Expected balance of first item to be negative");
+  }
+  let payment: Payment | null = null;
+  for (let i = pbs.length - 1; i >= 0; i--) {
+    const item = pbs[i];
+    if (Math.abs(first.balance) < item.balance) {
+      continue;
+    }
+    payment = {
+      from: item.name,
+      to: first.name,
+      amount: item.balance,
+    };
+    rest = rest.splice(i, 1);
+    break;
+  }
+  if (!payment) {
+    throw new Error("Could not find a suitable payment");
+  }
+  return { nextPayments: [payment], pbs: rest };
 }
 
 export function getEqualBalances(paymentBalances: PaymentBalance[]) {

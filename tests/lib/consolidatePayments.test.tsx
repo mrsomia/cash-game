@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   consolidatePayments,
   getEqualBalances,
+  getNextPayment,
 } from "../../lib/consolidatePayments";
 
 const input = [
@@ -71,19 +72,6 @@ describe("Consolidate Payments", () => {
   });
 
   it("splices the payments array correctly", () => {
-    const equalPayments = [
-      [
-        {
-          name: "Moun",
-          balance: -5,
-        },
-        {
-          name: "Sach",
-          balance: 5,
-        },
-      ],
-    ];
-
     const input = [
       {
         name: "Moun",
@@ -123,6 +111,75 @@ describe("Consolidate Payments", () => {
     ];
     const { pbs } = getEqualBalances(input);
     expect(pbs).toEqual(output);
+  });
+
+  it.skip("Sets up an equal payment", () => {
+    // For a 3 way payment
+    // Search the array to find 2 values that add up to a single one
+    const input = [
+      {
+        name: "Moun",
+        balance: -4,
+      },
+      {
+        name: "Jim",
+        balance: -3,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Sam",
+        balance: 2,
+      },
+      {
+        name: "Tom",
+        balance: 2,
+      },
+      {
+        name: "Sach",
+        balance: 2,
+      },
+    ];
+  });
+
+  it("Finds the next payment", () => {
+    const input = [
+      {
+        name: "Moun",
+        balance: -4,
+      },
+      {
+        name: "Jim",
+        balance: -3,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Sam",
+        balance: 2,
+      },
+      {
+        name: "Tom",
+        balance: 2,
+      },
+      {
+        name: "Sach",
+        balance: 2,
+      },
+    ];
+
+    const { nextPayments } = getNextPayment(input);
+    expect(nextPayments).toEqual([
+      {
+        from: "Sach",
+        to: "Moun",
+        amount: 2,
+      },
+    ]);
   });
 
   it.skip("address payments correctly", () => {

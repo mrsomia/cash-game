@@ -14,14 +14,24 @@ export function consolidatePayments(paymentBalances: PaymentBalance[]) {
 
   paymentBalances.sort((a, b) => a.balance - b.balance);
   console.log(paymentBalances);
-  const payments: Payment[] = [];
+  let payments: Payment[] = [];
 
   // Check if there are any items that match in size
-  const { equalPayments, pbs } = getEqualBalances(paymentBalances);
-  paymentBalances = pbs;
+  while (paymentBalances.length > 0) {
+    let { equalPayments, pbs } = getEqualBalances(paymentBalances);
+    paymentBalances = pbs;
+    payments = payments.concat(equalPayments);
+    if (equalPayments.length) {
+      continue;
+    }
 
-  // Check for ways to set up a payment/clear a payment
-  // cycle through payment balances for any one balance clearing items
+    // Check for ways to set up a payment/clear a payment
+    // cycle through payment balances for any one balance clearing items
+    let { nextPayments, rest } = getNextPayment(paymentBalances);
+    paymentBalances = rest;
+    payments = payments.concat(nextPayments);
+  }
+  return payments;
 }
 
 export function getNextPayment(paymentBalances: PaymentBalance[]) {

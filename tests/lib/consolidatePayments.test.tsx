@@ -5,33 +5,6 @@ import {
   getNextPayment,
 } from "../../lib/consolidatePayments";
 
-const input = [
-  {
-    name: "Moun",
-    balance: -5,
-  },
-  {
-    name: "Sandy",
-    balance: 1,
-  },
-  {
-    name: "Sach",
-    balance: 4,
-  },
-];
-const output = [
-  {
-    from: "Sach",
-    to: "Moun",
-    amount: 4,
-  },
-  {
-    from: "Sandy",
-    to: "Moun",
-    amount: 1,
-  },
-];
-
 describe("Consolidate Payments", () => {
   it("getEqualBalances returns expected payments", () => {
     const input = [
@@ -67,6 +40,33 @@ describe("Consolidate Payments", () => {
   });
 
   it("getEqualBalances returns an empty array when there are no equals", () => {
+    const input = [
+      {
+        name: "Moun",
+        balance: -5,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Sach",
+        balance: 4,
+      },
+    ];
+    const output = [
+      {
+        from: "Sach",
+        to: "Moun",
+        amount: 4,
+      },
+      {
+        from: "Sandy",
+        to: "Moun",
+        amount: 1,
+      },
+    ];
+
     const { equalPayments } = getEqualBalances(input);
     expect(equalPayments).toEqual([]);
   });
@@ -235,7 +235,34 @@ describe("Consolidate Payments", () => {
     ]);
   });
 
-  it.skip("address payments correctly", () => {
+  it("address simple mixed payments correctly", () => {
+    const input = [
+      {
+        name: "Moun",
+        balance: -5,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Sach",
+        balance: 4,
+      },
+    ];
+    const output = [
+      {
+        from: "Sach",
+        to: "Moun",
+        amount: 4,
+      },
+      {
+        from: "Sandy",
+        to: "Moun",
+        amount: 1,
+      },
+    ];
+
     expect(consolidatePayments(input)).toEqual(output);
   });
 });

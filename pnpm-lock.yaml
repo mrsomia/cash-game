@@ -14,7 +14,7 @@ devDependencies:
     specifier: ^23.2.0
     version: 23.2.0
   typescript:
-    specifier: ^5.2.2
+    specifier: ^5.3.3
     version: 5.3.3
   vite:
     specifier: ^5.0.8

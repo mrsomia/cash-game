@@ -10,7 +10,11 @@ type Payment = {
 };
 
 export function consolidatePayments(paymentBalances: PaymentBalance[]) {
-  // TODO:: throw error if balance do not add to zero
+  // throw error if balance do not add to zero
+  const total = paymentBalances.reduce((acc, pb) => pb.balance + acc, 0);
+  if (total !== 0) {
+    throw new Error("Expected balances to equal 0");
+  }
 
   paymentBalances.sort((a, b) => a.balance - b.balance);
   let payments: Payment[] = [];

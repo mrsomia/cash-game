@@ -347,4 +347,25 @@ describe("Consolidate Payments", () => {
 
     expect(consolidatePayments(input)).toEqual(output);
   });
+
+  it("errors when input balances do not equal 0", () => {
+    const input = [
+      {
+        name: "Moun",
+        balance: -5,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Sach",
+        balance: 3,
+      },
+    ];
+
+    expect(() => consolidatePayments(input)).toThrow(
+      "Expected balances to equal 0",
+    );
+  });
 });

@@ -55,18 +55,6 @@ describe("Consolidate Payments", () => {
         balance: 4,
       },
     ];
-    const output = [
-      {
-        from: "Sach",
-        to: "Moun",
-        amount: 4,
-      },
-      {
-        from: "Sandy",
-        to: "Moun",
-        amount: 1,
-      },
-    ];
 
     const { equalPayments } = getEqualBalances(input);
     expect(equalPayments).toEqual([]);

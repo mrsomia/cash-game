@@ -281,4 +281,35 @@ describe("Consolidate Payments", () => {
 
     expect(consolidatePayments(input)).toEqual(output);
   });
+
+  it("handles unordered input", () => {
+    const input = [
+      {
+        name: "Sach",
+        balance: 4,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Moun",
+        balance: -5,
+      },
+    ];
+    const output = [
+      {
+        from: "Sandy",
+        amount: 1,
+        to: "Moun",
+      },
+      {
+        from: "Sach",
+        amount: 4,
+        to: "Moun",
+      },
+    ];
+
+    expect(consolidatePayments(input)).toEqual(output);
+  });
 });

@@ -312,4 +312,39 @@ describe("Consolidate Payments", () => {
 
     expect(consolidatePayments(input)).toEqual(output);
   });
+
+  it("handles 0 input", () => {
+    const input = [
+      {
+        name: "Moun",
+        balance: -5,
+      },
+      {
+        name: "Sam",
+        balance: 0,
+      },
+      {
+        name: "Sandy",
+        balance: 1,
+      },
+      {
+        name: "Sach",
+        balance: 4,
+      },
+    ];
+    const output = [
+      {
+        from: "Sandy",
+        amount: 1,
+        to: "Moun",
+      },
+      {
+        from: "Sach",
+        amount: 4,
+        to: "Moun",
+      },
+    ];
+
+    expect(consolidatePayments(input)).toEqual(output);
+  });
 });

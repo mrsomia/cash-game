@@ -15,7 +15,8 @@ export function consolidatePayments(paymentBalances: PaymentBalance[]) {
   paymentBalances.sort((a, b) => a.balance - b.balance);
   let payments: Payment[] = [];
 
-  // TODO: splice out 0 balance values
+  // splice out 0 balance values
+  paymentBalances = paymentBalances.filter((pb) => pb.balance !== 0);
 
   // Check if there are any items that match in size
   while (paymentBalances.length > 0) {

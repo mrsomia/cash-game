@@ -13,8 +13,9 @@ export function consolidatePayments(paymentBalances: PaymentBalance[]) {
   // TODO:: throw error if balance do not add to zero
 
   paymentBalances.sort((a, b) => a.balance - b.balance);
-  console.log(paymentBalances);
   let payments: Payment[] = [];
+
+  // TODO: splice out 0 balance values
 
   // Check if there are any items that match in size
   while (paymentBalances.length > 0) {
@@ -22,6 +23,13 @@ export function consolidatePayments(paymentBalances: PaymentBalance[]) {
     paymentBalances = pbs;
     payments = payments.concat(equalPayments);
     if (equalPayments.length) {
+      continue;
+    }
+
+    let result = findThreePersonPayment(paymentBalances);
+    if (result) {
+      payments = payments.concat(result.payments);
+      paymentBalances = result.rest;
       continue;
     }
 
@@ -34,9 +42,65 @@ export function consolidatePayments(paymentBalances: PaymentBalance[]) {
   return payments;
 }
 
+export function findThreePersonPayment(paymentBalances: PaymentBalance[]) {
+  let pbs = structuredClone(paymentBalances);
+  let pb: PaymentBalance;
+  let items: [number, number] | null = null;
+  for (let i = 0; i < pbs.length; i++) {
+    pb = pbs[i];
+    // @ts-ignore
+    const rest: PaymentBalance[] = pbs.toSpliced(i, 1);
+    items = findTwoEquallingValues(rest, pb.balance);
+    console.log({ items, i, pbs, rest });
+    if (!items) continue;
+
+    // create payments
+    let payments: Payment[];
+    if (pb.balance < 0) {
+      payments = items.map((item) => ({
+        to: pb.name,
+        from: rest[item].name,
+        amount: rest[item].balance,
+      }));
+    } else {
+      payments = items.map((item) => ({
+        from: pb.name,
+        to: rest[item].name,
+        amount: rest[item].balance,
+      }));
+    }
+    // splice rest
+    for (const item of items.reverse()) {
+      rest.splice(item, 1);
+    }
+    // return
+    return { payments, rest };
+  }
+  return null;
+}
+
+export function findTwoEquallingValues(
+  paymentBalances: PaymentBalance[],
+  value: number,
+  // TS won't infer a tuple, just a num[]
+): [number, number] | null {
+  for (let i = 0; i < paymentBalances.length; i++) {
+    for (let j = 0; j < paymentBalances.length; j++) {
+      if (i === j) continue;
+      const totalTogether =
+        paymentBalances[i].balance + paymentBalances[j].balance;
+      if (Math.abs(totalTogether) === Math.abs(value)) {
+        return [i, j];
+      }
+    }
+  }
+  return null;
+}
+
 export function getNextPayment(paymentBalances: PaymentBalance[]) {
   const pbs = structuredClone(paymentBalances);
   let [first, ...rest] = pbs;
+  console.log(pbs);
   if (first.balance >= 0) {
     throw new Error("Expected balance of first item to be negative");
   }

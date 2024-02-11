@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   consolidatePayments,
+  findThreePersonPayment,
   getEqualBalances,
   getNextPayment,
 } from "../../lib/consolidatePayments";
@@ -113,7 +114,7 @@ describe("Consolidate Payments", () => {
     expect(pbs).toEqual(output);
   });
 
-  it.skip("Sets up an equal payment", () => {
+  it("Sets up an equal payment", () => {
     // For a 3 way payment
     // Search the array to find 2 values that add up to a single one
     const input = [
@@ -142,6 +143,21 @@ describe("Consolidate Payments", () => {
         balance: 2,
       },
     ];
+    const output = [
+      {
+        from: "Sam",
+        to: "Moun",
+        amount: 2,
+      },
+      {
+        from: "Tom",
+        to: "Moun",
+        amount: 2,
+      },
+    ];
+    const result = findThreePersonPayment(input);
+    expect(result).not.toBeNull();
+    expect(result?.payments).toEqual(output);
   });
 
   it("Finds the next payment", () => {
@@ -252,14 +268,14 @@ describe("Consolidate Payments", () => {
     ];
     const output = [
       {
-        from: "Sach",
+        from: "Sandy",
+        amount: 1,
         to: "Moun",
-        amount: 4,
       },
       {
-        from: "Sandy",
+        from: "Sach",
+        amount: 4,
         to: "Moun",
-        amount: 1,
       },
     ];
 

@@ -52,7 +52,6 @@ export function findThreePersonPayment(paymentBalances: PaymentBalance[]) {
     // @ts-ignore
     const rest: PaymentBalance[] = pbs.toSpliced(i, 1);
     items = findTwoEquallingValues(rest, pb.balance);
-    console.log({ items, i, pbs, rest });
     if (!items) continue;
 
     // create payments
@@ -101,7 +100,6 @@ export function findTwoEquallingValues(
 export function getNextPayment(paymentBalances: PaymentBalance[]) {
   const pbs = structuredClone(paymentBalances);
   let [first, ...rest] = pbs;
-  console.log(pbs);
   if (first.balance >= 0) {
     throw new Error("Expected balance of first item to be negative");
   }

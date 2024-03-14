@@ -1,6 +1,7 @@
-import { For, Component, createSignal } from "solid-js";
+import { For, Component, createSignal, Show } from "solid-js";
 import "./App.css";
 import { createStore } from "solid-js/store";
+import { cn } from "../lib/utils";
 
 function App() {
   const [players, _setPlayers] = createStore([
@@ -27,6 +28,13 @@ function App() {
     console.log({ open: openRow() });
   };
 
+  // const handleUpdateRow = (
+  //   index: number,
+  //   update: Partial<(typeof players)[number]>,
+  // ) => {
+  //   _setPlayers()
+  // };
+
   return (
     <div class="bg-slate-900 w-100 min-h-screen text-white">
       <div class="container">
@@ -34,7 +42,12 @@ function App() {
           Cash Game
         </h1>
         <div class="w-10/12 mx-auto text-center">
-          <div class="w-100 flex justify-between py-4 px-2">
+          <div
+            class={cn(
+              "w-100 flex justify-between py-4 px-1 ",
+              "text-gray-300 font-semibold md:font-bold",
+            )}
+          >
             <div>Name</div>
             <div class="pl-4">Buy in</div>
             <div>End stack</div>
@@ -46,7 +59,7 @@ function App() {
             {(player, index) => (
               <Player
                 player={player}
-                open={index() == openRow()}
+                open={index() === openRow()}
                 setOpenRow={() => handleToggleRow(index())}
               />
             )}
@@ -63,9 +76,8 @@ type PlayerValues = {
   end: number;
 };
 
-const Player: Component<{
+const ClosedPlayer: Component<{
   player: PlayerValues;
-  open: boolean;
   setOpenRow: () => void;
 }> = (props) => {
   return (
@@ -75,6 +87,52 @@ const Player: Component<{
       <div>{props.player.end.toFixed(2)}</div>
       <div onClick={props.setOpenRow}>+</div>
     </div>
+  );
+};
+
+const Player: Component<{
+  player: PlayerValues;
+  open: boolean;
+  setOpenRow: () => void;
+}> = (props) => {
+  return (
+    <Show
+      when={props.open}
+      fallback={
+        <ClosedPlayer player={props.player} setOpenRow={props.setOpenRow} />
+      }
+    >
+      <div class="w-100 py-4">
+        <form class=" flex-col justify-between">
+          <fieldset class="w-100 flex justify-evenly">
+            <label>Name</label>
+            <input
+              type="text"
+              value={props.player.name}
+              class="bg-slate-900"
+              disabled
+            />
+          </fieldset>
+          <fieldset class="w-100 flex justify-evenly">
+            <label>Buy In</label>
+            <input
+              type="number"
+              value={props.player.buyin.toFixed(2)}
+              class="bg-slate-900"
+            />
+          </fieldset>
+          <fieldset class="w-100 flex justify-evenly">
+            <label>Ending Stack</label>
+            <input
+              type="number"
+              value={props.player.end.toFixed(2)}
+              class="bg-slate-900"
+            />
+          </fieldset>
+        </form>
+        <div onClick={props.setOpenRow}>+</div>
+      </div>
+    </Show>
   );
 };
 

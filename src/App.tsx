@@ -1,10 +1,14 @@
 import { For, Component, createSignal, Show } from "solid-js";
 import "./App.css";
-import { createStore } from "solid-js/store";
 import { cn } from "../lib/utils";
 
+type Player = {
+  name: string;
+  buyin: number;
+  end: number;
+};
 function App() {
-  const [players, _setPlayers] = createStore([
+  const [players, setPlayers] = createSignal([
     {
       name: "Player 1",
       buyin: 0,
@@ -28,12 +32,17 @@ function App() {
     console.log({ open: openRow() });
   };
 
-  // const handleUpdateRow = (
-  //   index: number,
-  //   update: Partial<(typeof players)[number]>,
-  // ) => {
-  //   _setPlayers()
-  // };
+  const handleUpdateRow = (update: Partial<Player>) => {
+    if (openRow() === null) return;
+    console.log({ i: openRow(), update });
+    setPlayers((l) => {
+      const players = [...l];
+      players[openRow()!] = { ...players[openRow()!], ...update };
+      console.log({ players });
+      return players;
+    });
+    console.log({ open: openRow(), players: players() });
+  };
 
   return (
     <div class="bg-slate-900 w-100 min-h-screen text-white">
@@ -55,12 +64,13 @@ function App() {
               <span> </span>
             </div>
           </div>
-          <For each={players}>
+          <For each={players()}>
             {(player, index) => (
               <Player
                 player={player}
                 open={index() === openRow()}
                 setOpenRow={() => handleToggleRow(index())}
+                handleUpdateRow={handleUpdateRow}
               />
             )}
           </For>
@@ -94,6 +104,7 @@ const Player: Component<{
   player: PlayerValues;
   open: boolean;
   setOpenRow: () => void;
+  handleUpdateRow: (update: Partial<Player>) => void;
 }> = (props) => {
   return (
     <Show
@@ -110,7 +121,9 @@ const Player: Component<{
               type="text"
               value={props.player.name}
               class="bg-slate-900"
-              disabled
+              onChange={(e) =>
+                props.handleUpdateRow({ name: e.currentTarget.value })
+              }
             />
           </fieldset>
           <fieldset class="w-100 flex justify-evenly">
@@ -119,6 +132,11 @@ const Player: Component<{
               type="number"
               value={props.player.buyin.toFixed(2)}
               class="bg-slate-900"
+              onChange={(e) =>
+                props.handleUpdateRow({
+                  buyin: Number(e.currentTarget.value),
+                })
+              }
             />
           </fieldset>
           <fieldset class="w-100 flex justify-evenly">
@@ -127,6 +145,9 @@ const Player: Component<{
               type="number"
               value={props.player.end.toFixed(2)}
               class="bg-slate-900"
+              onChange={(e) =>
+                props.handleUpdateRow({ end: Number(e.currentTarget.value) })
+              }
             />
           </fieldset>
         </form>

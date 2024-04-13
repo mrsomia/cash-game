@@ -1,4 +1,4 @@
-import { For, Component, createSignal, Show } from "solid-js";
+import { For, Component, createSignal, Show, createMemo } from "solid-js";
 import "./App.css";
 import { cn } from "../lib/utils";
 
@@ -20,6 +20,20 @@ function App() {
       end: 0,
     },
   ]);
+
+  const totalBuyin = createMemo(() => {
+    return players()
+      .reduce((acc, p) => acc + p.buyin, 0)
+      .toFixed(2);
+  });
+
+  const totalEnd = createMemo(() => {
+    return players()
+      .reduce((acc, p) => acc + p.end, 0)
+      .toFixed(2);
+  });
+
+  const matchingTotals = createMemo(() => totalBuyin() === totalEnd());
 
   const [openRow, setOpenRow] = createSignal<null | number>(null);
 
@@ -93,6 +107,24 @@ function App() {
               />
             )}
           </For>
+          <div class="flex justify-between">
+            <div>
+              <span>Totals</span>
+            </div>
+            <div>
+              <span class={cn(matchingTotals() ? "" : "text-red-400")}>
+                {totalBuyin()}
+              </span>
+            </div>
+            <div>
+              <span class={cn(matchingTotals() ? "" : "text-red-400")}>
+                {totalEnd()}
+              </span>
+            </div>
+            <div>
+              <span> </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

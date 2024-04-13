@@ -32,6 +32,17 @@ function App() {
     console.log({ open: openRow() });
   };
 
+  const handleAddPlayer = () => {
+    setPlayers((prev) => [
+      ...prev,
+      {
+        name: `Player ${prev.length + 1}`,
+        buyin: 0,
+        end: 0,
+      },
+    ]);
+  };
+
   const handleUpdateRow = (update: Partial<Player>) => {
     if (openRow() === null) return;
     console.log({ i: openRow(), update });
@@ -51,6 +62,14 @@ function App() {
           Cash Game
         </h1>
         <div class="w-10/12 mx-auto text-center">
+          <div class="flex justify-end">
+            <button
+              class="text-2xl bg-orange-600 px-2"
+              onClick={handleAddPlayer}
+            >
+              New Player
+            </button>
+          </div>
           <div
             class={cn(
               "w-100 flex justify-between py-4 px-1 ",

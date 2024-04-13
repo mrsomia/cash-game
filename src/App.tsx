@@ -206,9 +206,24 @@ function App() {
           </div>
           <Show when={payments() !== null}>
             <div class="border-white border-1">
-              {JSON.stringify(
-                Object.entries(Object.groupBy(payments(), (p) => p.from)),
-              )}
+              <For
+                each={
+                  //@ts-expect-error
+                  Object.entries(Object.groupBy(payments(), (p) => p.from))
+                }
+              >
+                {(item) => (
+                  <div class="flex flex-col w-72 mx-auto">
+                    <span class="font-semibold py-2 self-start">{item[0]}</span>
+                    {
+                      //@ts-expect-error
+                      item[1].map((p) => (
+                        <span>{`${p.from} pays ${p.to}: ${p.amount.toFixed(2)}`}</span>
+                      ))
+                    }
+                  </div>
+                )}
+              </For>
             </div>
           </Show>
         </div>

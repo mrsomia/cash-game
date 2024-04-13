@@ -1,4 +1,11 @@
-import { For, Component, createSignal, Show, createMemo } from "solid-js";
+import {
+  For,
+  Component,
+  createSignal,
+  Show,
+  createMemo,
+  createEffect,
+} from "solid-js";
 import { consolidatePayments } from "../lib/consolidatePayments";
 import "./App.css";
 import { cn } from "../lib/utils";
@@ -9,7 +16,7 @@ type Player = {
   end: number;
 };
 function App() {
-  const [players, setPlayers] = createSignal([
+  const initialPlayers = [
     {
       name: "Player 1",
       buyin: 0,
@@ -20,7 +27,27 @@ function App() {
       buyin: 0,
       end: 0,
     },
-  ]);
+  ];
+  const [players, setPlayers] = createSignal(initialPlayers);
+
+  createEffect(() => {
+    const s = localStorage.getItem("lastUsedState");
+    if (!s) return;
+    const parsed = JSON.parse(s);
+    // TODO:validateShape
+    // TODO:validateTime
+    setPlayers(parsed.state);
+  });
+
+  createEffect(() => {
+    localStorage.setItem(
+      "lastUsedState",
+      JSON.stringify({
+        time: new Date(),
+        state: players(),
+      }),
+    );
+  });
 
   const totalBuyin = createMemo(() => {
     return players()

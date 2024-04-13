@@ -64,10 +64,10 @@ function App() {
         <div class="w-10/12 mx-auto text-center">
           <div class="flex justify-end">
             <button
-              class="text-2xl bg-orange-600 px-2"
+              class="font-semibold bg-orange-600 px-4 py-2 rounded-lg"
               onClick={handleAddPlayer}
             >
-              New Player
+              +
             </button>
           </div>
           <div

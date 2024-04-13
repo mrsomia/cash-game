@@ -1,4 +1,5 @@
 import { For, Component, createSignal, Show, createMemo } from "solid-js";
+import { consolidatePayments } from "../lib/consolidatePayments";
 import "./App.css";
 import { cn } from "../lib/utils";
 
@@ -37,6 +38,10 @@ function App() {
 
   const [openRow, setOpenRow] = createSignal<null | number>(null);
 
+  const [_payments, setPayments] = createSignal<null | ReturnType<
+    typeof consolidatePayments
+  >>(null);
+
   const handleToggleRow = (index: number) => {
     if (openRow() == index) {
       setOpenRow(null);
@@ -55,6 +60,17 @@ function App() {
         end: 0,
       },
     ]);
+  };
+
+  const handleCalculate = () => {
+    const balances = players().map((p) => ({
+      name: p.name,
+      balance: p.buyin - p.end,
+    }));
+    const p = consolidatePayments(balances);
+    // TODO: remove console.log
+    console.log("payments", p);
+    setPayments(p);
   };
 
   const handleUpdateRow = (update: Partial<Player>) => {
@@ -131,6 +147,7 @@ function App() {
                 matchingTotals() ? "bg-orange-600" : "bg-gray-200",
                 "rounded-lg p-2",
               )}
+              onClick={handleCalculate}
             >
               Calculate
             </button>

@@ -6,15 +6,19 @@ import {
   createMemo,
   createEffect,
 } from "solid-js";
+import { z } from "zod";
 import { consolidatePayments } from "../lib/consolidatePayments";
 import "./App.css";
 import { cn } from "../lib/utils";
 
-type Player = {
-  name: string;
-  buyin: number;
-  end: number;
-};
+const playerSchema = z.object({
+  name: z.string(),
+  buyin: z.number(),
+  end: z.number(),
+});
+
+type Player = z.infer<typeof playerSchema>;
+
 function App() {
   const initialPlayers = [
     {
@@ -30,21 +34,42 @@ function App() {
   ];
   const [players, setPlayers] = createSignal(initialPlayers);
 
+  const savedStateSchema = z.object({
+    time: z.number(),
+    playerState: z.array(playerSchema),
+  });
+
   createEffect(() => {
     const s = localStorage.getItem("lastUsedState");
     if (!s) return;
-    const parsed = JSON.parse(s);
-    // TODO:validateShape
-    // TODO:validateTime
-    setPlayers(parsed.state);
+
+    let parsed;
+    try {
+      parsed = JSON.parse(s);
+      parsed = savedStateSchema.passthrough().parse(parsed);
+    } catch (e) {
+      console.error("Incorrect state format", e);
+      return;
+    }
+
+    // If older than 1 day ignore it
+    if (Date.now() - parsed.time > 1 * 24 * 60 * 60 * 1000) {
+      console.log("Saved state time too old");
+      return;
+    }
+    setPlayers(parsed.playerState);
+    setPayments(
+      (parsed?.paymentState as ReturnType<typeof consolidatePayments>) ?? null,
+    );
   });
 
   createEffect(() => {
     localStorage.setItem(
       "lastUsedState",
       JSON.stringify({
-        time: new Date(),
-        state: players(),
+        time: Date.now(),
+        playerState: players(),
+        paymentState: _payments(),
       }),
     );
   });

@@ -125,6 +125,16 @@ function App() {
               <span> </span>
             </div>
           </div>
+          <div class="p-4 w-100">
+            <button
+              class={cn(
+                matchingTotals() ? "bg-orange-600" : "bg-gray-200",
+                "rounded-lg p-2",
+              )}
+            >
+              Calculate
+            </button>
+          </div>
         </div>
       </div>
     </div>

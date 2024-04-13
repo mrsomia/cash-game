@@ -97,7 +97,7 @@ function App() {
     const p = consolidatePayments(balances);
     // TODO: remove console.log
     console.log("payments", p);
-    setPayments(p);
+    setPayments(p.sort((a, b) => a.from.localeCompare(b.from)));
   };
 
   const handleUpdateRow = (update: Partial<Player>) => {

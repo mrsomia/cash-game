@@ -69,7 +69,7 @@ function App() {
       JSON.stringify({
         time: Date.now(),
         playerState: players(),
-        paymentState: _payments(),
+        paymentState: payments(),
       }),
     );
   });
@@ -90,7 +90,7 @@ function App() {
 
   const [openRow, setOpenRow] = createSignal<null | number>(null);
 
-  const [_payments, setPayments] = createSignal<null | ReturnType<
+  const [payments, setPayments] = createSignal<null | ReturnType<
     typeof consolidatePayments
   >>(null);
 
@@ -204,6 +204,13 @@ function App() {
               Calculate
             </button>
           </div>
+          <Show when={payments() !== null}>
+            <div class="border-white border-1">
+              {JSON.stringify(
+                Object.entries(Object.groupBy(payments(), (p) => p.from)),
+              )}
+            </div>
+          </Show>
         </div>
       </div>
     </div>

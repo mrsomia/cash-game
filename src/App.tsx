@@ -93,7 +93,6 @@ function App() {
   >(() => {
     const p = payments();
     if (!p) return null;
-    //@ts-expect-error
     return Object.entries(Object.groupBy(p, (payment) => payment.from)) as [
       string,
       ReturnType<typeof consolidatePayments>,
@@ -117,6 +116,7 @@ function App() {
       balance: p.buyin - p.end,
     }));
     const p = consolidatePayments(balances);
+    if (p.length === 0) return;
     setPayments(p);
   };
 

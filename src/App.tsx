@@ -147,6 +147,16 @@ function App() {
     console.log({ open: idx, players: players() });
   };
 
+  const handleRemoveRow = (idx: number) => {
+    console.log({ idx });
+    setPlayers((l) => {
+      if (l.length < 3) {
+        toast.error("Unable to delete, must have at least 2 Players");
+      }
+      return l.toSpliced(idx, 1);
+    });
+  };
+
   const handleCopy = async () => {
     const p = paymentsText();
     console.log(p);
@@ -189,6 +199,7 @@ function App() {
                 <th class="p-2">Name</th>
                 <th class="p-2">Buy in</th>
                 <th class="p-2">End stack</th>
+                <th> </th>
               </tr>
             </thead>
             <tbody>
@@ -198,6 +209,7 @@ function App() {
                     player={player}
                     handleUpdateRow={handleUpdateRow}
                     idx={index()}
+                    handleRemoveRow={handleRemoveRow}
                   />
                 )}
               </For>
@@ -299,6 +311,7 @@ const Player: Component<{
   player: PlayerValues;
   handleUpdateRow: (update: Partial<Player>, idx: number) => void;
   idx: number;
+  handleRemoveRow: (idx: number) => void;
 }> = (props) => {
   return (
     <tr class="w-100 py-4">
@@ -345,6 +358,14 @@ const Player: Component<{
             }
           />
         </fieldset>
+      </td>
+      <td>
+        <button
+          class="text-red-400 px-1"
+          onClick={() => props.handleRemoveRow(props.idx)}
+        >
+          X
+        </button>
       </td>
     </tr>
   );

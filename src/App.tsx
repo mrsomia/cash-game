@@ -58,9 +58,6 @@ function App() {
       return;
     }
     setPlayers(parsed.playerState);
-    setPayments(
-      (parsed?.paymentState as ReturnType<typeof consolidatePayments>) ?? null,
-    );
   });
 
   createEffect(() => {
@@ -69,7 +66,6 @@ function App() {
       JSON.stringify({
         time: Date.now(),
         playerState: players(),
-        paymentState: payments(),
       }),
     );
   });

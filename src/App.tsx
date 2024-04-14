@@ -228,9 +228,9 @@ function App() {
             </button>
           </div>
           <Show when={groupedPayments() !== null}>
-            <div class="relative border-white border-1 text-center w-72 mx-auto">
+            <div class="relative text-center w-72 mx-auto rounded-md py-6">
               <button
-                class="z-10 absolute right-1 top-1 bg-black rounded-sm active:opacity-35"
+                class="z-10 absolute right-1 top-1 bg-black active:opacity-35 border-2 border-slate-400 p-2 border-solid rounded-lg"
                 onClick={handleCopy}
               >
                 <svg

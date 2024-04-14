@@ -168,12 +168,14 @@ function App() {
           <h1 class="py-12 text-2xl lg:text-3xl text-center font-bold">
             Cash Game
           </h1>
-          <table class="w-10/12 mx-auto text-center">
-            <thead class={cn("text-gray-300 font-semibold md:font-bold")}>
+          <table class="max-w-11/12 mx-auto text-center">
+            <thead
+              class={cn("text-gray-300 font-semibold text-lg md:font-bold")}
+            >
               <tr>
-                <th class="py-2">Name</th>
-                <th>Buy in</th>
-                <th>End stack</th>
+                <th class="p-2">Name</th>
+                <th class="p-2">Buy in</th>
+                <th class="p-2">End stack</th>
               </tr>
             </thead>
             <tbody>
@@ -277,7 +279,7 @@ const Player: Component<{
 }> = (props) => {
   return (
     <tr class="w-100 py-4">
-      <td>
+      <td class="py-1">
         <fieldset class="w-100 flex justify-evenly">
           <input
             type="text"

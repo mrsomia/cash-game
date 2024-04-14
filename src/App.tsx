@@ -160,6 +160,19 @@ function App() {
     }
   };
 
+  const handleShare = () => {
+    const p = paymentsText();
+    if (!p) return;
+    try {
+      navigator.share({
+        text: p,
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error("Error sharing text, please try copy and paste");
+    }
+  };
+
   return (
     <>
       <Toaster position="bottom-right" gutter={8} />
@@ -229,25 +242,35 @@ function App() {
           </div>
           <Show when={groupedPayments() !== null}>
             <div class="relative text-center w-72 mx-auto rounded-md py-6">
-              <button
-                class="z-10 absolute right-1 top-1 bg-black active:opacity-35 border-2 border-slate-400 p-2 border-solid rounded-lg"
-                onClick={handleCopy}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width={1.5}
-                  stroke="currentColor"
-                  class="w-6 h-6"
+              <div class="z-10 absolute right-1 top-1 space-x-2">
+                <button
+                  class=" bg-black active:opacity-35 border-2 border-slate-400 p-2 border-solid rounded-lg"
+                  onClick={handleCopy}
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="w-5 h-5"
+                  >
+                    <path d="M7 3.5A1.5 1.5 0 0 1 8.5 2h3.879a1.5 1.5 0 0 1 1.06.44l3.122 3.12A1.5 1.5 0 0 1 17 6.622V12.5a1.5 1.5 0 0 1-1.5 1.5h-1v-3.379a3 3 0 0 0-.879-2.121L10.5 5.379A3 3 0 0 0 8.379 4.5H7v-1Z" />
+                    <path d="M4.5 6A1.5 1.5 0 0 0 3 7.5v9A1.5 1.5 0 0 0 4.5 18h7a1.5 1.5 0 0 0 1.5-1.5v-5.879a1.5 1.5 0 0 0-.44-1.06L9.44 6.439A1.5 1.5 0 0 0 8.378 6H4.5Z" />
+                  </svg>
+                </button>
+                <button
+                  class="bg-black active:opacity-35 border-2 border-slate-400 p-2 border-solid rounded-lg"
+                  onClick={handleShare}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="w-5 h-5"
+                  >
+                    <path d="M13 4.5a2.5 2.5 0 1 1 .702 1.737L6.97 9.604a2.518 2.518 0 0 1 0 .792l6.733 3.367a2.5 2.5 0 1 1-.671 1.341l-6.733-3.367a2.5 2.5 0 1 1 0-3.475l6.733-3.366A2.52 2.52 0 0 1 13 4.5Z" />
+                  </svg>
+                </button>
+              </div>
               <For each={groupedPayments()}>
                 {(item) => (
                   <div class="flex flex-col w-72 mx-auto">

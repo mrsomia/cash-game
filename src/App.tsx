@@ -141,90 +141,92 @@ function App() {
         <h1 class="py-12 text-2xl lg:text-3xl text-center font-bold">
           Cash Game
         </h1>
-        <div class="w-10/12 mx-auto text-center">
-          <div class="flex justify-end">
-            <button
-              class="font-semibold bg-orange-600 px-4 py-2 rounded-lg"
-              onClick={handleAddPlayer}
-            >
-              +
-            </button>
-          </div>
-          <div
-            class={cn(
-              "w-100 flex justify-between py-4 px-1 ",
-              "text-gray-300 font-semibold md:font-bold",
-            )}
-          >
-            <div>Name</div>
-            <div class="pl-4">Buy in</div>
-            <div>End stack</div>
-            <div>
-              <span> </span>
-            </div>
-          </div>
-          <For each={players()}>
-            {(player, index) => (
-              <Player
-                player={player}
-                open={index() === openRow()}
-                setOpenRow={() => handleToggleRow(index())}
-                handleUpdateRow={handleUpdateRow}
-              />
-            )}
-          </For>
-          <div class="flex justify-between">
-            <div>
-              <span>Totals</span>
-            </div>
-            <div>
-              <span class={cn(matchingTotals() ? "" : "text-red-400")}>
-                {totalBuyin()}
-              </span>
-            </div>
-            <div>
-              <span class={cn(matchingTotals() ? "" : "text-red-400")}>
-                {totalEnd()}
-              </span>
-            </div>
-            <div>
-              <span> </span>
-            </div>
-          </div>
-          <div class="p-4 w-100">
-            <button
-              class={cn(
-                matchingTotals() ? "bg-orange-600" : "bg-gray-200",
-                "rounded-lg p-2",
+        {/* <div class="flex justify-end mx-8 my-4"> */}
+        {/*   <button */}
+        {/*     class="font-semibold bg-orange-600 px-4 py-2 rounded-lg" */}
+        {/*     onClick={handleAddPlayer} */}
+        {/*   > */}
+        {/*     + */}
+        {/*   </button> */}
+        {/* </div> */}
+        <table class="w-10/12 mx-auto text-center">
+          <thead class={cn("text-gray-300 font-semibold md:font-bold")}>
+            <tr>
+              <th class="py-2">Name</th>
+              <th>Buy in</th>
+              <th>End stack</th>
+            </tr>
+          </thead>
+          <tbody>
+            <For each={players()}>
+              {(player, index) => (
+                <Player
+                  player={player}
+                  open={index() === openRow()}
+                  setOpenRow={() => handleToggleRow(index())}
+                  handleUpdateRow={handleUpdateRow}
+                />
               )}
-              onClick={handleCalculate}
-            >
-              Calculate
-            </button>
-          </div>
-          <Show when={payments() !== null}>
-            <div class="border-white border-1">
-              <For
-                each={
-                  //@ts-expect-error
-                  Object.entries(Object.groupBy(payments(), (p) => p.from))
-                }
-              >
-                {(item) => (
-                  <div class="flex flex-col w-72 mx-auto">
-                    <span class="font-semibold py-2 self-start">{item[0]}</span>
-                    {
-                      //@ts-expect-error
-                      item[1].map((p) => (
-                        <span>{`${p.from} pays ${p.to}: ${p.amount.toFixed(2)}`}</span>
-                      ))
-                    }
-                  </div>
-                )}
-              </For>
-            </div>
-          </Show>
+            </For>
+            <tr>
+              <td colspan="3" class="py-2">
+                <button class="" onClick={handleAddPlayer}>
+                  + Add Player
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th class="">
+                <span>Totals</span>
+              </th>
+              <th>
+                <span class={cn(matchingTotals() ? "" : "text-red-400")}>
+                  {totalBuyin()}
+                </span>
+              </th>
+              <th>
+                <span class={cn(matchingTotals() ? "" : "text-red-400")}>
+                  {totalEnd()}
+                </span>
+              </th>
+            </tr>
+          </tfoot>
+        </table>
+        <div class="p-4 flex justify-center">
+          <button
+            class={cn(
+              matchingTotals() ? "bg-orange-600" : "bg-gray-200",
+              "rounded-lg p-2",
+            )}
+            onClick={handleCalculate}
+          >
+            Calculate
+          </button>
         </div>
+        <Show when={payments() !== null}>
+          <div class="border-white border-1 text-center">
+            <For
+              each={
+                //@ts-expect-error
+                Object.entries(Object.groupBy(payments(), (p) => p.from))
+              }
+            >
+              {(item) => (
+                <div class="flex flex-col w-72 mx-auto">
+                  <span class="font-semibold py-2 self-start">{item[0]}</span>
+                  {
+                    //@ts-expect-error
+                    item[1].map((p) => (
+                      <span>{`${p.from} pays ${p.to}: ${p.amount.toFixed(2)}`}</span>
+                    ))
+                  }
+                </div>
+              )}
+            </For>
+          </div>
+        </Show>
       </div>
     </div>
   );
@@ -236,20 +238,6 @@ type PlayerValues = {
   end: number;
 };
 
-const ClosedPlayer: Component<{
-  player: PlayerValues;
-  setOpenRow: () => void;
-}> = (props) => {
-  return (
-    <div class="w-100 flex justify-between">
-      <div>{props.player.name}</div>
-      <div>{props.player.buyin.toFixed(2)}</div>
-      <div>{props.player.end.toFixed(2)}</div>
-      <div onClick={props.setOpenRow}>+</div>
-    </div>
-  );
-};
-
 const Player: Component<{
   player: PlayerValues;
   open: boolean;
@@ -257,53 +245,46 @@ const Player: Component<{
   handleUpdateRow: (update: Partial<Player>) => void;
 }> = (props) => {
   return (
-    <Show
-      when={props.open}
-      fallback={
-        <ClosedPlayer player={props.player} setOpenRow={props.setOpenRow} />
-      }
-    >
-      <div class="w-100 py-4">
-        <form class=" flex-col justify-between">
-          <fieldset class="w-100 flex justify-evenly">
-            <label>Name</label>
-            <input
-              type="text"
-              value={props.player.name}
-              class="bg-slate-900"
-              onChange={(e) =>
-                props.handleUpdateRow({ name: e.currentTarget.value })
-              }
-            />
-          </fieldset>
-          <fieldset class="w-100 flex justify-evenly">
-            <label>Buy In</label>
-            <input
-              type="number"
-              value={props.player.buyin.toFixed(2)}
-              class="bg-slate-900"
-              onChange={(e) =>
-                props.handleUpdateRow({
-                  buyin: Number(e.currentTarget.value),
-                })
-              }
-            />
-          </fieldset>
-          <fieldset class="w-100 flex justify-evenly">
-            <label>Ending Stack</label>
-            <input
-              type="number"
-              value={props.player.end.toFixed(2)}
-              class="bg-slate-900"
-              onChange={(e) =>
-                props.handleUpdateRow({ end: Number(e.currentTarget.value) })
-              }
-            />
-          </fieldset>
-        </form>
-        <div onClick={props.setOpenRow}>+</div>
-      </div>
-    </Show>
+    <tr class="w-100 py-4">
+      <td>
+        <fieldset class="w-100 flex justify-evenly">
+          <input
+            type="text"
+            value={props.player.name}
+            class="bg-slate-900 w-28 text-center"
+            onChange={(e) =>
+              props.handleUpdateRow({ name: e.currentTarget.value })
+            }
+          />
+        </fieldset>
+      </td>
+      <td>
+        <fieldset class="w-100 flex justify-evenly">
+          <input
+            type="number"
+            value={props.player.buyin.toFixed(2)}
+            class="bg-slate-900 w-14 text-center"
+            onChange={(e) =>
+              props.handleUpdateRow({
+                buyin: Number(e.currentTarget.value),
+              })
+            }
+          />
+        </fieldset>
+      </td>
+      <td>
+        <fieldset class="w-100 flex justify-evenly">
+          <input
+            type="number"
+            value={props.player.end.toFixed(2)}
+            class="bg-slate-900 w-14 text-center"
+            onChange={(e) =>
+              props.handleUpdateRow({ end: Number(e.currentTarget.value) })
+            }
+          />
+        </fieldset>
+      </td>
+    </tr>
   );
 };
 

@@ -94,6 +94,18 @@ function App() {
     typeof consolidatePayments
   >>(null);
 
+  const groupedPayments = createMemo<
+    null | [string, ReturnType<typeof consolidatePayments>][]
+  >(() => {
+    const p = payments();
+    if (!p) return null;
+    //@ts-expect-error
+    return Object.entries(Object.groupBy(p, (payment) => payment.from)) as [
+      string,
+      ReturnType<typeof consolidatePayments>,
+    ][];
+  });
+
   const handleToggleRow = (index: number) => {
     if (openRow() == index) {
       setOpenRow(null);
@@ -120,7 +132,7 @@ function App() {
       balance: p.buyin - p.end,
     }));
     const p = consolidatePayments(balances);
-    setPayments(p.sort((a, b) => a.from.localeCompare(b.from)));
+    setPayments(p);
   };
 
   const handleUpdateRow = (update: Partial<Player>) => {
@@ -197,23 +209,15 @@ function App() {
             Calculate
           </button>
         </div>
-        <Show when={payments() !== null}>
+        <Show when={groupedPayments() !== null}>
           <div class="border-white border-1 text-center">
-            <For
-              each={
-                //@ts-expect-error
-                Object.entries(Object.groupBy(payments(), (p) => p.from))
-              }
-            >
+            <For each={groupedPayments()}>
               {(item) => (
                 <div class="flex flex-col w-72 mx-auto">
                   <span class="font-semibold py-2 self-start">{item[0]}</span>
-                  {
-                    //@ts-expect-error
-                    item[1].map((p) => (
-                      <span>{`${p.from} pays ${p.to}: ${p.amount.toFixed(2)}`}</span>
-                    ))
-                  }
+                  {item[1].map((p) => (
+                    <span>{`${p.from} pays ${p.to}: ${p.amount.toFixed(2)}`}</span>
+                  ))}
                 </div>
               )}
             </For>

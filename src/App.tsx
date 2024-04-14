@@ -141,14 +141,6 @@ function App() {
         <h1 class="py-12 text-2xl lg:text-3xl text-center font-bold">
           Cash Game
         </h1>
-        {/* <div class="flex justify-end mx-8 my-4"> */}
-        {/*   <button */}
-        {/*     class="font-semibold bg-orange-600 px-4 py-2 rounded-lg" */}
-        {/*     onClick={handleAddPlayer} */}
-        {/*   > */}
-        {/*     + */}
-        {/*   </button> */}
-        {/* </div> */}
         <table class="w-10/12 mx-auto text-center">
           <thead class={cn("text-gray-300 font-semibold md:font-bold")}>
             <tr>

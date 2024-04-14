@@ -229,7 +229,7 @@ const Player: Component<{
           <input
             type="text"
             value={props.player.name}
-            class="bg-slate-900 w-28 text-center"
+            class="bg-slate-900 w-28 sm:w-40 text-center"
             onChange={(e) =>
               props.handleUpdateRow({ name: e.currentTarget.value }, props.idx)
             }
@@ -241,7 +241,7 @@ const Player: Component<{
           <input
             type="number"
             value={props.player.buyin.toFixed(2)}
-            class="bg-slate-900 w-14 text-center"
+            class="bg-slate-900 w-14 sm:w-20 text-center"
             onChange={(e) =>
               props.handleUpdateRow(
                 {
@@ -258,7 +258,7 @@ const Player: Component<{
           <input
             type="number"
             value={props.player.end.toFixed(2)}
-            class="bg-slate-900 w-14 text-center"
+            class="bg-slate-900 w-14 sm:w-20 text-center"
             onChange={(e) =>
               props.handleUpdateRow(
                 { end: Number(e.currentTarget.value) },

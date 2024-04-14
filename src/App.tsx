@@ -188,7 +188,7 @@ function App() {
               </For>
               <tr>
                 <td colspan="3" class="py-2">
-                  <button class="" onClick={handleAddPlayer}>
+                  <button class="active:opacity-35" onClick={handleAddPlayer}>
                     + Add Player
                   </button>
                 </td>
@@ -215,7 +215,9 @@ function App() {
           <div class="p-4 flex justify-center">
             <button
               class={cn(
-                matchingTotals() ? "bg-orange-600" : "bg-gray-200",
+                matchingTotals()
+                  ? "bg-orange-600 active:bg-orange-700"
+                  : "bg-gray-200",
                 "rounded-lg p-2",
               )}
               onClick={handleCalculate}

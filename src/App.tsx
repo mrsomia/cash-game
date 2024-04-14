@@ -131,6 +131,20 @@ function App() {
     console.log({ open: idx, players: players() });
   };
 
+  const handleCopy = () => {
+    const gp = groupedPayments();
+    if (!gp) return;
+    let result = ``;
+    gp.forEach((arr) => {
+      result += `## ${arr[0]}\n`;
+      arr[1].forEach((payment) => {
+        result += `${payment.from} pays ${payment.to}: ${payment.amount.toFixed(2)}\n`;
+      });
+      result += `\n`;
+    });
+    console.log(result);
+  };
+
   return (
     <div class="bg-slate-900 w-100 min-h-screen text-white">
       <div class="container mx-auto">

@@ -107,7 +107,7 @@ function App() {
     gp.forEach((arr) => {
       result += `## ${arr[0]}\n`;
       arr[1].forEach((payment) => {
-        result += `${payment.from} pays ${payment.to}: ${payment.amount.toFixed(2)}\n`;
+        result += ` - ${payment.from} pays ${payment.to}: ${payment.amount.toFixed(2)}\n`;
       });
       result += `\n`;
     });
@@ -137,14 +137,13 @@ function App() {
   };
 
   const handleUpdateRow = (update: Partial<Player>, idx: number) => {
-    console.log({ i: idx, update });
+    console.log("Updating row", { i: idx, update });
     setPlayers((l) => {
       const players = [...l];
       players[idx] = { ...players[idx], ...update };
-      console.log({ players });
       return players;
     });
-    console.log({ open: idx, players: players() });
+    console.log("Updated row", { open: idx, players: players() });
   };
 
   const handleRemoveRow = (idx: number) => {

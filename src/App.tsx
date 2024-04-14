@@ -10,6 +10,7 @@ import { z } from "zod";
 import { consolidatePayments } from "../lib/consolidatePayments";
 import "./App.css";
 import { cn } from "../lib/utils";
+import { Toaster, toast } from "solid-toast";
 
 const playerSchema = z.object({
   name: z.string(),
@@ -99,6 +100,21 @@ function App() {
     ][];
   });
 
+  const paymentsText = createMemo(() => {
+    const gp = groupedPayments();
+    if (!gp) return null;
+    let result = ``;
+    gp.forEach((arr) => {
+      result += `## ${arr[0]}\n`;
+      arr[1].forEach((payment) => {
+        result += `${payment.from} pays ${payment.to}: ${payment.amount.toFixed(2)}\n`;
+      });
+      result += `\n`;
+    });
+    console.log(result);
+    return result;
+  });
+
   const handleAddPlayer = () => {
     setPlayers((prev) => [
       ...prev,
@@ -131,97 +147,102 @@ function App() {
     console.log({ open: idx, players: players() });
   };
 
-  const handleCopy = () => {
-    const gp = groupedPayments();
-    if (!gp) return;
-    let result = ``;
-    gp.forEach((arr) => {
-      result += `## ${arr[0]}\n`;
-      arr[1].forEach((payment) => {
-        result += `${payment.from} pays ${payment.to}: ${payment.amount.toFixed(2)}\n`;
-      });
-      result += `\n`;
-    });
-    console.log(result);
+  const handleCopy = async () => {
+    const p = paymentsText();
+    console.log(p);
+    if (!p) return;
+    try {
+      await navigator.clipboard.writeText(p);
+      toast.success("Copied to clipboard");
+    } catch (err) {
+      console.error("error", err);
+      toast.error("Error while copying");
+    }
   };
 
   return (
-    <div class="bg-slate-900 w-100 min-h-screen text-white">
-      <div class="container mx-auto">
-        <h1 class="py-12 text-2xl lg:text-3xl text-center font-bold">
-          Cash Game
-        </h1>
-        <table class="w-10/12 mx-auto text-center">
-          <thead class={cn("text-gray-300 font-semibold md:font-bold")}>
-            <tr>
-              <th class="py-2">Name</th>
-              <th>Buy in</th>
-              <th>End stack</th>
-            </tr>
-          </thead>
-          <tbody>
-            <For each={players()}>
-              {(player, index) => (
-                <Player
-                  player={player}
-                  handleUpdateRow={handleUpdateRow}
-                  idx={index()}
-                />
+    <>
+      <Toaster position="bottom-right" gutter={8} />
+      <div class="bg-slate-900 w-100 min-h-screen text-white">
+        <div class="container mx-auto">
+          <h1 class="py-12 text-2xl lg:text-3xl text-center font-bold">
+            Cash Game
+          </h1>
+          <table class="w-10/12 mx-auto text-center">
+            <thead class={cn("text-gray-300 font-semibold md:font-bold")}>
+              <tr>
+                <th class="py-2">Name</th>
+                <th>Buy in</th>
+                <th>End stack</th>
+              </tr>
+            </thead>
+            <tbody>
+              <For each={players()}>
+                {(player, index) => (
+                  <Player
+                    player={player}
+                    handleUpdateRow={handleUpdateRow}
+                    idx={index()}
+                  />
+                )}
+              </For>
+              <tr>
+                <td colspan="3" class="py-2">
+                  <button class="" onClick={handleAddPlayer}>
+                    + Add Player
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th class="">
+                  <span>Totals</span>
+                </th>
+                <th>
+                  <span class={cn(matchingTotals() ? "" : "text-red-400")}>
+                    {totalBuyin()}
+                  </span>
+                </th>
+                <th>
+                  <span class={cn(matchingTotals() ? "" : "text-red-400")}>
+                    {totalEnd()}
+                  </span>
+                </th>
+              </tr>
+            </tfoot>
+          </table>
+          <div class="p-4 flex justify-center">
+            <button
+              class={cn(
+                matchingTotals() ? "bg-orange-600" : "bg-gray-200",
+                "rounded-lg p-2",
               )}
-            </For>
-            <tr>
-              <td colspan="3" class="py-2">
-                <button class="" onClick={handleAddPlayer}>
-                  + Add Player
-                </button>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th class="">
-                <span>Totals</span>
-              </th>
-              <th>
-                <span class={cn(matchingTotals() ? "" : "text-red-400")}>
-                  {totalBuyin()}
-                </span>
-              </th>
-              <th>
-                <span class={cn(matchingTotals() ? "" : "text-red-400")}>
-                  {totalEnd()}
-                </span>
-              </th>
-            </tr>
-          </tfoot>
-        </table>
-        <div class="p-4 flex justify-center">
-          <button
-            class={cn(
-              matchingTotals() ? "bg-orange-600" : "bg-gray-200",
-              "rounded-lg p-2",
-            )}
-            onClick={handleCalculate}
-          >
-            Calculate
-          </button>
-        </div>
-        <Show when={groupedPayments() !== null}>
-          <div class="border-white border-1 text-center">
-            <For each={groupedPayments()}>
-              {(item) => (
-                <div class="flex flex-col w-72 mx-auto">
-                  <span class="font-semibold py-2 self-start">{item[0]}</span>
-                  {item[1].map((p) => (
-                    <span>{`${p.from} pays ${p.to}: ${p.amount.toFixed(2)}`}</span>
-                  ))}
-                </div>
-              )}
-            </For>
+              onClick={handleCalculate}
+            >
+              Calculate
+            </button>
           </div>
-        </Show>
+          <Show when={groupedPayments() !== null}>
+            <div class="relative border-white border-1 text-center w-72 mx-auto">
+              <button class="z-10 absolute right-1 top-1" onClick={handleCopy}>
+                Copy
+              </button>
+              <For each={groupedPayments()}>
+                {(item) => (
+                  <div class="flex flex-col w-72 mx-auto">
+                    <span class="font-semibold py-2 self-start">{item[0]}</span>
+                    {item[1].map((p) => (
+                      <span>{`${p.from} pays ${p.to}: ${p.amount.toFixed(2)}`}</span>
+                    ))}
+                  </div>
+                )}
+              </For>
+            </div>
+          </Show>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

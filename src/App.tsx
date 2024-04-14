@@ -84,8 +84,6 @@ function App() {
 
   const matchingTotals = createMemo(() => totalBuyin() === totalEnd());
 
-  const [openRow, setOpenRow] = createSignal<null | number>(null);
-
   const [payments, setPayments] = createSignal<null | ReturnType<
     typeof consolidatePayments
   >>(null);
@@ -101,15 +99,6 @@ function App() {
       ReturnType<typeof consolidatePayments>,
     ][];
   });
-
-  const handleToggleRow = (index: number) => {
-    if (openRow() == index) {
-      setOpenRow(null);
-    } else {
-      setOpenRow(index);
-    }
-    console.log({ open: openRow() });
-  };
 
   const handleAddPlayer = () => {
     setPlayers((prev) => [
@@ -131,16 +120,15 @@ function App() {
     setPayments(p);
   };
 
-  const handleUpdateRow = (update: Partial<Player>) => {
-    if (openRow() === null) return;
-    console.log({ i: openRow(), update });
+  const handleUpdateRow = (update: Partial<Player>, idx: number) => {
+    console.log({ i: idx, update });
     setPlayers((l) => {
       const players = [...l];
-      players[openRow()!] = { ...players[openRow()!], ...update };
+      players[idx] = { ...players[idx], ...update };
       console.log({ players });
       return players;
     });
-    console.log({ open: openRow(), players: players() });
+    console.log({ open: idx, players: players() });
   };
 
   return (
@@ -162,9 +150,8 @@ function App() {
               {(player, index) => (
                 <Player
                   player={player}
-                  open={index() === openRow()}
-                  setOpenRow={() => handleToggleRow(index())}
                   handleUpdateRow={handleUpdateRow}
+                  idx={index()}
                 />
               )}
             </For>
@@ -232,9 +219,8 @@ type PlayerValues = {
 
 const Player: Component<{
   player: PlayerValues;
-  open: boolean;
-  setOpenRow: () => void;
-  handleUpdateRow: (update: Partial<Player>) => void;
+  handleUpdateRow: (update: Partial<Player>, idx: number) => void;
+  idx: number;
 }> = (props) => {
   return (
     <tr class="w-100 py-4">
@@ -245,7 +231,7 @@ const Player: Component<{
             value={props.player.name}
             class="bg-slate-900 w-28 text-center"
             onChange={(e) =>
-              props.handleUpdateRow({ name: e.currentTarget.value })
+              props.handleUpdateRow({ name: e.currentTarget.value }, props.idx)
             }
           />
         </fieldset>
@@ -257,9 +243,12 @@ const Player: Component<{
             value={props.player.buyin.toFixed(2)}
             class="bg-slate-900 w-14 text-center"
             onChange={(e) =>
-              props.handleUpdateRow({
-                buyin: Number(e.currentTarget.value),
-              })
+              props.handleUpdateRow(
+                {
+                  buyin: Number(e.currentTarget.value),
+                },
+                props.idx,
+              )
             }
           />
         </fieldset>
@@ -271,7 +260,10 @@ const Player: Component<{
             value={props.player.end.toFixed(2)}
             class="bg-slate-900 w-14 text-center"
             onChange={(e) =>
-              props.handleUpdateRow({ end: Number(e.currentTarget.value) })
+              props.handleUpdateRow(
+                { end: Number(e.currentTarget.value) },
+                props.idx,
+              )
             }
           />
         </fieldset>

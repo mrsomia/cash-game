@@ -120,8 +120,6 @@ function App() {
       balance: p.buyin - p.end,
     }));
     const p = consolidatePayments(balances);
-    // TODO: remove console.log
-    console.log("payments", p);
     setPayments(p.sort((a, b) => a.from.localeCompare(b.from)));
   };
 
@@ -139,7 +137,7 @@ function App() {
 
   return (
     <div class="bg-slate-900 w-100 min-h-screen text-white">
-      <div class="container">
+      <div class="container mx-auto">
         <h1 class="py-12 text-2xl lg:text-3xl text-center font-bold">
           Cash Game
         </h1>

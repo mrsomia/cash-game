@@ -1,28 +1,18 @@
-## Usage
+# Cash Game Calculator
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+An app to help calculate who should transfer money to who after a local cash game.
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+## Tech used
 
-## Available Scripts
+Solid.js - Used for UI and templating. This project was my first attempt to learn and use Solid. It seems like generally an easier to use React as the effects do not need a dependancy array.
 
-In the project directory, you can run:
+Tailwind - I was more concerned with the algoritm and wanted to focus on logic. I was already familiar with tailwind and felt like I could move relatively quickly with it.
 
-### `npm run dev`
+Custom algorithm - I wrote a custom algorithm to try and find the least number of payments made overall.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+Web APIs - to share and copy the payments text, as well as localStorage
 
-### `npm run build`
+Vercel - to deploy
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-Learn more about deploying your application with the [documentations](https://vitejs.dev/guide/static-deploy.html)
+## Conslusion/Changes
+I'm happy with the way this has turned out. I can use this myself for my home games. If I had more time and needed saved data I would add auth and store each games data in a DB with a server component. But for now this handles everything I need for my home games.
